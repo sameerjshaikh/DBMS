@@ -1,0 +1,150 @@
+->FUNCTIONS:-
+
+1.	DELIMITER @
+	create function countbook(ctrn varchar(20))
+	returns int
+	begin 
+	return(select count(*) from book where bookname=ctrn);
+	END @
+	DELIMITER ;
+	
+	SQL QUREY:
+		select countbook('HARRY POTTER');
+
+
+2.	DELIMITER !
+	create function sumbookcost()
+	returns int
+	begin 
+	return(select sum(cost) from bookstore );
+	END !
+	DELIMITER ;
+	
+	SQL QUREY:
+		select sumbookcost();
+
+
+3.	DELIMITER !
+	create function avgbookcost()
+	returns int
+	begin 
+	return(select avg(cost) from bookstore );
+	END !
+	DELIMITER ;
+	
+	SQL QUREY:
+		select avgbookcost();
+
+
+	
+------------------xxxxxxxxxxxxxxxxx----------------
+	
+
+
+->PROCEDURE:-
+	
+1.	DELIMITER @
+	create procedure allmembers()
+	begin
+	select membername from members;
+	END @
+	DELIMITER ;
+
+	SQL QUERY:-
+	call allmembers;
+
+2.	DELIMITER #
+	create procedure insertmem()
+	begin
+	insert into members values('022','SURESH','M','BANGLORE','8741148402');
+	END #
+	DELIMITER ;
+
+	SQL QUERY:-
+	call insertmem;
+
+3.	DELIMITER @
+	create procedure updatemem()
+	begin 
+	update members set membername='SEEMA', membergender='F' where memberid='022';
+	END @
+	DELIMITER ;
+
+	SQL QUERY:-
+	call updatemem;
+
+4.	DELIMITER @
+	create procedure deletemem()
+	begin 
+	delete from members where memberid='022';
+	END @
+	DELIMITER ;
+
+	SQL QUERY:-
+	call deletemem;
+
+5. 	DELIMITER $
+	create procedure memcard(out mem varchar(20))
+	begin
+	select membername from members;
+	END $
+	DELIMITER ;
+
+	SQL QUERY:-
+	call memcard(@mem);
+
+------------------xxxxxxxxxxxxxxxxxxxxx---------------
+-> TRIGGERS:-
+
+
+	delimiter @
+	create procedure adinsert1(in bookid varchar(20), marketprice int(20))
+
+	begin
+	if marketprice < 0 THEN SIGNAL SQLSTATE '45001'
+		SET MESSAGE_TEXT = 'ERROR! price can not be less than zero';
+	end if;
+	end @
+	delimiter ;
+ 
+
+
+     1. delimiter #
+	create trigger trg3 before insert on price
+	for each row
+	begin
+	call adinsert1 ('new.bookid',new.marketprice);
+	end #
+	delimiter ;
+
+
+
+     2. delimiter @
+
+	create trigger trg4 before update on price
+	for each row
+	begin
+	call adinsert1 ('new.bookid',new.marketprice);
+	end @
+	delimiter ;
+
+
+
+   	3.	delimiter @
+		create trigger trg5 after insert on price 
+		for each row
+		begin 
+		call adinsert1 ('new.bookid',new.marketprice);
+		end @
+		delimiter ;
+	
+
+
+	4.	 delimiter #
+		create trigger trg6 after update on price
+		for each row
+		begin 
+		call adinsert1 ('new.bookid',new.marketprice);
+		end #
+		delimiter ;
+	
