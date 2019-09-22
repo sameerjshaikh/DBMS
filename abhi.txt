@@ -1,0 +1,58 @@
+/*Creating Database*/
+	--> use hospital
+
+/*Creating Collection*/
+	--> db.createCollection('doctor')
+	
+
+/*Inserting in Collection*/
+	--> db.doctor.insert({name:"abhishikt",dept:"neuroscientist",salary:70000,location:"ajmer"})
+	--> db.doctor.insert({name:"pritosh",dept:"dentist",salary:50000,location:"ajmer"})
+	--> db.doctor.insert({name:"abhishek",dept:"allergist",salary:40000,location:"faridabad"})
+	--> db.doctor.insert({name:"meban",dept:"cardiologist",salary:50000,location:"shilong"})
+	
+
+
+/*Display the data in collection*/
+	--> db.doctor.find()
+	--> db.doctor.find().pretty()
+
+/*To list few documents*/
+	--> db.doctor.find({},{'salary':1,'location':1})
+	-->  db.doctor.find({},{_id:0,'salary':1,'location':1})
+
+/*To list the documents in collection based on single (something similar to where) condition*/
+	--> db.doctor.find({salary:50000}).pretty()
+
+/*Use of AND condition*/
+	--> db.doctor.find({salary:70000,location:"ajmer"},{_id:0}).pretty()
+
+/*Use of or condition*/
+	--> db.doctor.find({$or:[{salary:70000},{location:"ajmer"}]},{_id:0}).pretty()
+
+/*Use of > , < , = >= , <=
+	--> db.doctor.find({salary:{$gt:50000}}).pretty()
+	--> db.doctor.find({salary:{$lt:50000}}).pretty()
+	--> db.doctor.find({salary:{$lte:50000}}).pretty()
+	--> db.doctor.find({salary:{$gte:50000}}).pretty()
+
+
+/*Sorting*/
+	--> db.doctor.find().sort({name:-1}).pretty()
+	--> db.doctor.find().sort({name:1}).pretty()
+
+/*Grouping*/
+	--> db.doctor.aggregate([{$group:{_id:"$salary",salarycount:{$sum:1}}}])
+
+/*Use of Remove*/
+	--> db.doctor.remove({salary:50000})
+
+/*updating commands*/
+
+	--> db.doctor.update({name:"pritosh"},{$set:{dept:"ent"}})
+	--> db.doctor.updateMany({salary:50000},{$set:{dept:"ent"}})
+	--> db.doctor.update({},{$set:{doc_id:1}})
+	--> db.doctor.update({name:"abhishek"},{$set:{doc_id:2}})
+	--> db.doctor.update({name:"abhishikt"},{$unset:{doc_id:1}})
+	--> db.doctor.update({},{$unset:{doc_id:""}},{multi:true})
+	--> db.doctor.update({name:"abhishek",salary:40000},{$set:{dept:"phycologist"}})
