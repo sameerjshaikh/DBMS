@@ -1,0 +1,163 @@
+
+SHOW PROCEDURE STATUS WHERE Db = 'databasename';
+
+Procedures
+----------------------------------------------------------------
+DELIMITER /
+ CREATE PROCEDURE GetAllProducts()
+   BEGIN
+   SELECT productname  FROM products limit 20;
+   END /
+ DELIMITER ;
+call GetAllProducts
+-------------------------------------
+
+DELIMITER /
+CREATE PROCEDURE GetOfficeByCountry(IN countryName VARCHAR(255))
+ BEGIN  
+ SELECT * FROM offices  WHERE country = countryName;
+ END /
+DELIMITER ;
+-------------------------------------------------------------------
+CALL  GetOfficeByCountry('usa');
+----------------------------------------------------------------
+DELIMITER /
+CREATE PROCEDURE show_born_in_year(p_year INT)
+BEGIN
+SELECT first_name,last_name,birth,death
+FROM president
+WHERE YEAR(birth) = p_year;
+END /
+DELIMITER ;
+
+--> CALL show_born_in_year(1908)
+--------------------------------------------------------
+
+DELIMITER /
+
+CREATE PROCEDURE CountOrderByStatus(IN orderStatus VARCHAR(25),
+ OUT total INT)
+BEGIN
+ SELECT count(orderNumber) INTO total FROM orders WHERE status = orderStatus;
+END /
+DELIMITER ;
+
+Call --> CALL CountOrderByStatus('Shipped',@total);
+SELECT @total;
+--------------------------------------------------------
+Delimiter /
+CREATE PROCEDURE count_students_by_sex (OUT p_male INT, OUT p_female INT)
+BEGIN
+SELECT COUNT(*) FROM student WHERE sex = 'M' INTO p_male;
+SELECT COUNT(*) FROM student WHERE sex = 'F' INTO p_female;
+END /
+Delimiter ;
+
+-->CALL count_students_by_sex(@mcount,@fcount)
+SELECT 'Number of male students:',@mcount
+SELECT 'Number of female students:',@fcount
+----------------------------------------------------------------
+
+
+DELIMITER /
+CREATE PROCEDURE GetCustomerLevel(
+    IN  p_customerNumber INT(11),
+    OUT p_customerLevel  varchar(10))
+BEGIN
+    DECLARE creditlim DOUBLE;
+ 
+    SELECT creditlimit INTO creditlim
+    FROM customers
+    WHERE customerNumber = p_customerNumber;
+    SELECT CUSTOMERLEVEL(creditlim) INTO p_customerLevel;
+END /
+Delimiter ;
+Call --> CAll GetCustomerLevel(125, @level) /
+SELECT 'Level of Given Customer is :',@level /
+
+---------------------------------------------------------------
+Above procedure using CASE statement
+
+DELIMITER /
+CREATE PROCEDURE GetCustomerLevel(
+ in  p_customerNumber int(11), out p_customerLevel  varchar(10))
+BEGIN
+    DECLARE credit double;
+    SELECT creditlimit INTO credit FROM customers WHERE customerNumber      = p_customerNumber;
+    CASE  
+ WHEN credit > 50000 THEN 
+    SET p_customerLevel = 'PLATINUM';
+ WHEN (credit <= 50000 AND credit >= 10000) THEN
+    SET p_customerLevel = 'GOLD';
+ WHEN credit < 10000 THEN
+    SET p_customerLevel = 'SILVER';
+ END CASE;
+END /
+Delimiter ;
+Call -->
+CALL GetCustomerLevel(112,@level);
+SELECT @level AS 'Customer Level';
+---------------------------------------------------------------
+
+DELIMITER //
+ 
+CREATE PROCEDURE GetCustomerShipping(
+ in  p_customerNumber int(11), 
+ out p_shiping        varchar(50))
+BEGIN
+    DECLARE customerCountry varchar(50);
+ 
+    SELECT country INTO customerCountry
+ FROM customers
+ WHERE customerNumber = p_customerNumber;
+ 
+    CASE customerCountry
+ WHEN  'USA' THEN
+    SET p_shiping = '2-day Shipping';
+ WHEN 'Canada' THEN
+    SET p_shiping = '3-day Shipping';
+ ELSE
+    SET p_shiping = '5-day Shipping';
+ END CASE;
+
+END //
+
+Delimiter ;
+
+Call for above procedure
+------------------------
+
+SET @customerNo = 112;
+ 
+SELECT country into @country FROM customers
+WHERE customernumber = @customerNo;
+ 
+CALL GetCustomerShipping(@customerNo,@shipping);
+ 
+SELECT @customerNo AS Customer,
+       @country    AS Country,
+       @shipping   AS Shipping;
+
+
+--------------------------------------------------------
+
+To see code of procedure
+------------------------
+
+SELECT ROUTINE_DEFINITION FROM INFORMATION_SCHEMA.ROUTINES
+
+ WHERE ROUTINE_SCHEMA = 'classicmodels' AND ROUTINE_TYPE = 
+
+ 'FUNCTION' AND ROUTINE_NAME = "CountryWiseCount";
+
+
+
+
+SELECT ROUTINE_DEFINITION FROM INFORMATION_SCHEMA.ROUTINES
+
+ WHERE ROUTINE_SCHEMA = 'classicmodels' AND ROUTINE_TYPE = 
+
+ 'FUNCTION' AND ROUTINE_NAME = "CountryWiseCount";
+
+
+

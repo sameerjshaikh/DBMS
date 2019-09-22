@@ -1,0 +1,105 @@
+Looping Structures
+
+1) While Do
+
+Delimiter /
+Create procedure chkwhile()
+Begin
+Declare a int;
+Declare strng varchar(20);
+
+set a = 1;
+set strng = '';
+While (a <=5) do
+	set strng = concat(strng,a,',');
+	set a = a+1;
+End While;
+
+Select strng;
+End /
+
+Delimiter ; 
+========================================================================
+
+2) Repeat
+
+Delimiter //
+
+Create procedure chkrpt()
+Begin
+
+declare strng varchar(20);
+declare b int(10);
+
+set strng = '' ;
+set b = 1;
+
+Repeat 
+	set strng = concat(strng, b , ',');
+	set b = b+1;
+	until b = 6
+End repeat;
+
+Select strng;
+
+End //
+
+Delimiter ;
+================================================================================
+
+3) Loop strcture
+
+ delimiter /
+ CREATE PROCEDURE chklp()
+ BEGIN
+ DECLARE c  INT;
+ DECLARE strng  VARCHAR(200);
+        
+ SET c = 1;
+ SET strng =  '';
+
+ printnum:  LOOP
+ IF  c = 50 THEN 
+ 	LEAVE  printnum;
+ END  IF;
+ SET c = c + 1;
+ IF  (c mod 2) THEN
+ 	ITERATE  printnum;
+ ELSE
+        SET  strng = CONCAT(strng,c,',');
+ END  IF;
+         END LOOP;    
+          SELECT strng;
+ END /
+
+ Delimiter ;	
+===========================================================================
+4) Cursor
+
+Delimiter $$ 
+CREATE PROCEDURE getbooklist (INOUT booklist varchar(1000))
+BEGIN
+
+ DECLARE cmplt INTEGER default 0; 
+ DECLARE bname varchar(100) default "" ; 
+ DEClARE bookname_cursor CURSOR FOR  SELECT bookname FROM book;
+  
+ DECLARE CONTINUE HANDLER 
+ FOR NOT FOUND SET cmplt = 1;
+ OPEN bookname_cursor;
+ get_bookname: LOOP
+ FETCH bookname_cursor INTO bname;
+ IF cmplt = 1 THEN 
+ LEAVE get_bookname;
+ END IF;
+ 
+ SET booklist = CONCAT(booklist,"|",bname);
+ END LOOP get_bookname;
+ CLOSE bookname_cursor;
+ 
+END $$
+DELIMITER ;
+set @booklist = '';
+Call getbooklist(@booklist);
+Select @booklist;
+

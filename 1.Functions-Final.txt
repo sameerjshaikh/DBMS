@@ -1,0 +1,68 @@
+SET GLOBAL log_bin_trust_function_creators = 1;
+
+SHOW PROCEDURE STATUS WHERE Db = 'databasename';
+
+SHOW Function STATUS WHERE Db = 'classicmodels';
+
+
+
+------------------------------------------------------------------
+Functions
+-----------------------------------------------------------------
+Delimiter /
+CREATE FUNCTION StatusCount(mStatus varchar(50))
+
+RETURNS INT
+BEGIN
+RETURN(SELECT COUNT(*) FROM orders WHERE status = mStatus);
+END /
+Delimiter ;
+
+
+
+
+-->SELECT StatusCount('Shipped')
+
+----------------------------------------------------------------------Delimiter /
+CREATE FUNCTION CountryWiseCount(mCountry varchar(50))
+RETURNS INT
+BEGIN
+RETURN (SELECT COUNT(*) FROM customers WHERE country = mCountry);
+END /
+Delimiter ;
+
+SELECT 'Numebr of Customers in USA are ', CountryWiseCount('USA') 
+
+------------------------------------------------------------------
+
+DELIMITER /
+CREATE FUNCTION CustomerLevel(p_creditLimit double)
+RETURNS VARCHAR(10)
+BEGIN
+    DECLARE lvl varchar(10);
+    IF p_creditLimit > 50000 THEN
+    SET lvl = 'PLATINUM';     
+    ELSEIF (p_creditLimit <= 50000 AND p_creditLimit >= 10000) THEN
+        SET lvl = 'GOLD';
+   ELSEIF p_creditLimit < 10000 THEN
+        SET lvl = 'SILVER';
+   END IF;
+  RETURN (lvl);
+END /
+Delimiter ;
+
+
+
+
+
+--> SELECT CustomerName, creditLimit,CustomerLevel(creditLimit) FROM customers;
+
+------------------------------------------------------------------------------
+
+
+
+
+
+
+
+

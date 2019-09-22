@@ -1,0 +1,31 @@
+Updating the documents
+
+
+db.Employee.update({Employeeid:1},{$set:{EmployeeName:"Sunil"}})
+
+Will update name of the employee from old name to 'Sunil' whose EmployeeID is 1 ---> ONLY first Instance
+
+
+db.Employee.updateMany({Employeeid:1},{$set:{EmployeeName:"Sunil"}})
+
+Will update name of ALL the employee(s) from old name to 'Sunil' whose EmployeeID is 1 ---> ALL THE Instances
+
+
+db.suppliers.update({Country:"Germany",City:"Frankfurt"},{$set:{HomePage:"google.com"}})
+Will update HomePage URL of supplier from Germany AND Frnakfurt
+(use of AND condition while updating a value of key)
+
+db.Employee.update({},{$set:{EmployeeLocation:"Mumbai"}})
+
+Will add another key-value pair called EmployeeLocation:Mumbai , which was orignally not there in document
+
+db.Employee.update({Employeeid:2},{$set:{EmployeeSalary:25000}})
+Will add another key-value pair in SPECIFIC DOCUMENT (as per condition given) called EmployeeSalary:25000 , which was orignally not there in document
+
+db.Employee.update({EmployeeSalary:30000},{$unset:{EmployeeLocation:"Pune"}})
+Will remove key-value pair in SPECIFIC DOCUMENT (as per condition given) called EmployeeSalary:30000 
+
+
+
+db.Employee.update({},{$unset:{EmployeeLocation:""}})
+Will remove ALL the key-value pair in ALL DOCUMENTS with a key called 'EmployeeLocation'

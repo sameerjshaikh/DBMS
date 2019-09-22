@@ -1,0 +1,28 @@
+
+Delimiter /
+Create procedure booknameUsingwhile()
+Begin
+Declare a integer default 0;
+declare i integer default 0;
+
+Declare bkname varchar(2000);
+Declare bk varchar(20);
+
+set bk = '';
+set bkname = '';
+
+select count(*) from book into a;
+
+While (i <= a) do
+
+	Select bookname into bk from book limit i,1;	
+	set bkname = concat(bkname, '|' ,bk);
+	set i = i + 1;
+
+End While;
+
+Select bkname;
+
+End /
+
+Delimiter ; 
